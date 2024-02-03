@@ -14,8 +14,11 @@ import com.employee.entity.EmployeeDetailsRequest;
 import com.employee.entity.EmployeeResponse;
 import com.employee.service.EmployeeService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("api/v1/employee")
+@Tag(name = "EmployeeController" , description = "")
 //@Validated
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class EmployeeController {

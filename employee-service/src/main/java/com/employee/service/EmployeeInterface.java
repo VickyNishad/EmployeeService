@@ -1,9 +1,5 @@
 package com.employee.service;
 
-import java.util.HashMap;
-import java.util.List;
-
-import com.employee.entity.EmployeeDetails;
 import com.employee.entity.EmployeeDetailsRequest;
 import com.employee.entity.EmployeeResponse;
 

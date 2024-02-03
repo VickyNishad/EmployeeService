@@ -3,6 +3,7 @@ package com.employee.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import com.employee.exception.CustomeException;
 import com.employee.exception.EntityNotFoundException;
 import com.employee.exception.RequestNotFoundException;
 import com.employee.repository.EmployeeRepository;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
 @Service
 public class EmployeeService implements EmployeeInterface {
@@ -41,7 +43,6 @@ public class EmployeeService implements EmployeeInterface {
 
 //			System.out.println(commonService.generateAndSaveSequentialNumber());
 
-
 			if (commonService.isValidMobileNumber(employeeDetailsRequest.getEmp_contact())) {
 				employeeDetails.setEmp_contact(employeeDetailsRequest.getEmp_contact());
 
@@ -67,13 +68,20 @@ public class EmployeeService implements EmployeeInterface {
 			response.setErrorcode("0");
 			response.setMessage("recod inserted successfully !");
 			response.setResult(employeeDetails);
+			
+			
+			commonService.log(new JSONPObject("log", employeeDetailsRequest), employeeDetailsRequest.getEmp_id());
+			
+			
 			return response;
 
 		} catch (RequestNotFoundException e) {
 			// TODO: handle exception
+			commonService.log(new JSONPObject("log", employeeDetailsRequest), employeeDetailsRequest.getEmp_id());
 			throw new RequestNotFoundException(e.getMessage(), e.getHttpStatus(), e.getStatus());
 		} catch (Exception e) {
 			// TODO: handle exception
+			commonService.log(new JSONPObject("log", employeeDetailsRequest), employeeDetailsRequest.getEmp_id());
 			throw new CustomeException(e.getLocalizedMessage());
 
 		}
@@ -119,6 +127,11 @@ public class EmployeeService implements EmployeeInterface {
 					response.setErrorcode("0");
 					response.setMessage("recod updated successfully !");
 					response.setResult(employeeDetails);
+					
+					
+					commonService.log(new JSONPObject("log", employeeDetailsRequest), employeeDetailsRequest.getEmp_id());
+
+					
 					return response;
 
 				} else {
@@ -139,15 +152,21 @@ public class EmployeeService implements EmployeeInterface {
 					response.setErrorcode("0");
 					response.setMessage("recod updated successfully !");
 					response.setResult(employeeDetails);
+					
+					commonService.log(new JSONPObject("log", employeeDetailsRequest), employeeDetailsRequest.getEmp_id());
+
+					
 					return response;
 				}
 			}
 
 		} catch (EntityNotFoundException e) {
 			// TODO: handle exception
+			commonService.log(new JSONPObject("log", employeeDetails), employeeDetailsRequest.getEmp_id());
 			throw new EntityNotFoundException(e.getMessage());
 		} catch (Exception e) {
 			// TODO: handle exception
+			commonService.log(new JSONPObject("log", employeeDetails), employeeDetailsRequest.getEmp_id());
 			throw new CustomeException("internal server error", "500", "INTERNAL SERVER ERROR");
 		}
 
@@ -172,13 +191,20 @@ public class EmployeeService implements EmployeeInterface {
 			response.setErrorcode("0");
 			response.setMessage("recod retrive successfully !");
 			response.setResult(employee_Details.get());
+			
+			
+			
+			commonService.log(new JSONPObject("log", employeeDetails), emp_id);
+
 			return response;
 
 		} catch (EntityNotFoundException e) {
 			// TODO: handle exception
+			commonService.log(new JSONPObject("log", employeeDetails), emp_id);
 			throw new EntityNotFoundException(e.getMessage(), e.getHttpStatus(), e.getStatus());
 		} catch (Exception e) {
 			// TODO: handle exception
+			commonService.log(new JSONPObject("log", employeeDetails), emp_id);
 			throw new CustomeException("internal server error", "500", "INTERNAL SERVER ERROR");
 
 		}

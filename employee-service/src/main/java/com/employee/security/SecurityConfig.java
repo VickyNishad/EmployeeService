@@ -14,21 +14,35 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 	@Autowired
-    private JWTAuthenticationEntryPoint point;
-    @Autowired
-    private JwtAuthenticationFilter filter;
+	private JWTAuthenticationEntryPoint point;
+	@Autowired
+	private JwtAuthenticationFilter filter;
+	
+	private static final String[] AUTH_WHITELIST = {
+	        "/v2/api-docs",
+	        "/swagger-resources",
+	        "/swagger-resources/**",
+	        "/configuration/ui",
+	        "/configuration/security",
+	        "/swagger-ui.html",
+	        "/webjars/**",
+	        "/v3/api-docs/**",
+	        "/swagger-ui/**",
+	        "/api/v1/auth/login"
+	};
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests().
-                requestMatchers("/test").authenticated().requestMatchers("/swagger-ui/**","api/v1/auth/login").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and().exceptionHandling(ex -> ex.authenticationEntryPoint(point))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests()
+				.requestMatchers(AUTH_WHITELIST)
+				.permitAll().requestMatchers("/test").authenticated()
+				// requestMatchers("/test").authenticated().requestMatchers("/swagger-ui/**",
+				// "/v3/api-docs", "/webjars/**",
+				// "/swagger-resources/**","api/v1/auth/login").permitAll()
+				.anyRequest().authenticated().and().exceptionHandling(ex -> ex.authenticationEntryPoint(point))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 }
